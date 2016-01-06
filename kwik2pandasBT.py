@@ -4,12 +4,17 @@ import pandas as pd
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import argparse
+import glob
+import os
 
+def get_args():
+    parser = argparse.ArgumentParser(description='Convert manually sorted KWIK file to pandas DataFrame')
+    parser.add_argument('kwikfile', type=str, nargs='?', help='Path to manually sorted KWIK file to convert')
+    parser.add_argument('destination_dir', type=str, nargs='?', help='Directory in which to place the pandas DataFrame')
 
-kwikfile = "../../st1215_cat_P01_S01_3rdPen.kwik"
+    return parser.parse_args()
 
-
-# In[2]:
 
 from collections import Counter
 class StimCounter(Counter):
@@ -18,7 +23,7 @@ class StimCounter(Counter):
         return self[key] - 1
 
 
-# In[3]:
+
 
 with h5py.File(kwikfile, 'r') as f:
     sample_rate = None
