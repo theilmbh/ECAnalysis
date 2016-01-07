@@ -1,3 +1,8 @@
+# This script takes a manually sorted kwik file and extracts the Good, MUA, and Unsorted cells.
+# It creates a pandas data frame that allows for easy manipulation of TOEs and corresponding stimuli.
+# Brad Theilma 010716
+
+
 
 import h5py
 import pandas as pd
