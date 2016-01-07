@@ -26,13 +26,26 @@ def main():
 
 	# open the datafile
 	spikedata = pd.read_pickle(datafile)
+	# get number of units, number of stims
+	cells = spikedata['cluster'].unique()
+	stim_names = spikedata['stim_name'].unique()
+	nstim = np.size(stim_names)
+
+	for cellind in cells:
+		for stimnm in stim_names:
+			celldata = spikedata[spikedata['cluster'] == cellind]
+			cellstimdata = celldata[celldata['stim_name'] == stimnm]
+			cellinfo = {'cellid': cellind, 'sort_type': 'Unimplemented'}
+			stiminfo = {'stim_name': simnm, 'start_time': 0.0, 'end_time': 1.0}
+			expinfo = {'bird': 'Unimplemented', 'site': 'unimplemented'}
+			
 
 def make_raster(events, cell, stim, experiment):
 	''' Generate a well-formated raster plot with all metadata
 
 		events: DataFrame with TOE, trial columns
-		cell: Dict with CellID, sort_type
-		stim: Dict with StimName, StartTime, EndTime
+		cell: Dict with cellid, sort_type
+		stim: Dict with stim_name, StartTime, EndTime
 		experiment: Dict with Bird, Site XYZ, DataFrame
 	'''
 
