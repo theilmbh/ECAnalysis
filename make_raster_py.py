@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # This script makes various kinds of raster plots from pandas data and saves them
 # Brad Theilman 010716
 
