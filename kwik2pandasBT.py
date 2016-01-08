@@ -102,6 +102,7 @@ def main():
         stims.reset_index(drop=True, inplace=True)
         spikes['stim_name'], spikes['stim_presentation'], spikes['stim_time_stamp'] = zip(*spikes["time_stamp"].map(Stims(stims).stim_checker))
         spikes['stim_aligned_time_stamp'] = spikes['time_stamp'].values.astype('int') - spikes['stim_time_stamp'].values
+        spikes['stim_aligned_time_stamp_seconds'] = spikes['stim_aligned_time_stamp'] / sample_rate
         spikes_wo_bad = spikes[spikes['cluster_group'] != 0]
         spikes_wo_bad.to_pickle(destfile)
 

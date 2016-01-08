@@ -38,7 +38,12 @@ def main():
 			cellinfo = {'cellid': cellind, 'sort_type': 'Unimplemented'}
 			stiminfo = {'stim_name': simnm, 'start_time': 0.0, 'end_time': 1.0}
 			expinfo = {'bird': 'Unimplemented', 'site': 'unimplemented'}
-			
+
+			events = cellstimdata[['stim_aligned_time_stamp_seconds', 'stim_presentation']]
+			events.rename(columns={'stim_aligned_time_stamp_seconds': 'TOE', 'stim_presentation': 'trial'})
+			rasterplot = make_raster(events, cellinfo, stiminfo, expinfo)
+
+
 
 def make_raster(events, cell, stim, experiment):
 	''' Generate a well-formated raster plot with all metadata
@@ -68,8 +73,11 @@ def make_raster(events, cell, stim, experiment):
 	plt.ylabel('Trial')
 	return raster
 
-def save_raster(spike_raster, dest):
-	spike_raster.savefig(dest)
+def save_raster(spike_raster, dest, cell, stim, exp):
+	
+	raster_fname = "cell_" + str(cell['cellid']) +"_stim_" + stim['stim_name'] _ "_raster.png"
+	save_f = os.path.join(dest, raster_fname)
+	spike_raster.savefig(save_f)
 
 if __name__ == '__main__':
     main()
