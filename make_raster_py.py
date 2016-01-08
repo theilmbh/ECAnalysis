@@ -37,12 +37,17 @@ def main():
 			celldata = spikedata[spikedata['cluster'] == cellind]
 			cellstimdata = celldata[celldata['stim_name'] == stimnm]
 			cellinfo = {'cellid': cellind, 'sort_type': 'Unimplemented'}
-			stiminfo = {'stim_name': simnm, 'start_time': 0.0, 'end_time': 1.0}
+			stiminfo = {'stim_name': stimnm, 'start_time': 0.0, 'end_time': 1.0}
 			expinfo = {'bird': 'Unimplemented', 'site': 'unimplemented'}
 
 			events = cellstimdata[['stim_aligned_time_stamp_seconds', 'stim_presentation']]
-			events.rename(columns={'stim_aligned_time_stamp_seconds': 'TOE', 'stim_presentation': 'trial'})
+			events.rename(columns={'stim_aligned_time_stamp_seconds': 'TOE', 'stim_presentation': 'trial'}, inplace=True)
 			rasterplot = make_raster(events, cellinfo, stiminfo, expinfo)
+			
+			raster_fname = "cell_" + str(cellinfo['cellid']) +"_stim_" + stiminfo['stim_name'] + "_raster.png"
+			save_f = os.path.join(dest, raster_fname)
+			rasterplot.savefig(save_f)
+			plt.close(rasterplot)
 
 
 
@@ -57,6 +62,7 @@ def make_raster(events, cell, stim, experiment):
 
 	raster = plt.figure()
 	ntrials = events['trial'].unique().size
+	
 	for i in range(ntrials):
 		spikes_this_trial = events.loc[events['trial'] == i+1, 'TOE'].values.astype('float')
 		# get number of spikes in this trial
@@ -75,10 +81,11 @@ def make_raster(events, cell, stim, experiment):
 	return raster
 
 def save_raster(spike_raster, dest, cell, stim, exp):
-	
-	raster_fname = "cell_" + str(cell['cellid']) +"_stim_" + stim['stim_name'] _ "_raster.png"
+	print('Saving Raster')
+	raster_fname = "cell_" + str(cell['cellid']) +"_stim_" + stim['stim_name'] + "_raster.png"
 	save_f = os.path.join(dest, raster_fname)
 	spike_raster.savefig(save_f)
+	plt.close(spike_raster)
 
 if __name__ == '__main__':
     main()
