@@ -39,11 +39,11 @@ class Stims(object):
     def stim_checker(self, time_stamp):
         if time_stamp < self.cur_stim[1]:
             if self.stim_index == 0 or self.cur_stim[1] - time_stamp < time_stamp - self.prev_stim[2]:
-                return self.cur_stim[[3, 4, 1]]
+                return self.cur_stim[[3, 4, 1, 2]]
             else:
-                return self.prev_stim[[3, 4, 1]]
+                return self.prev_stim[[3, 4, 1, 2]]
         elif time_stamp < self.cur_stim[2]:
-            return self.cur_stim[[3, 4, 1]]
+            return self.cur_stim[[3, 4, 1, 2]]
         else:
             if self.stim_index + 1 < len(self.stims):
                 #print time_stamp, self.stim_index
@@ -56,7 +56,7 @@ class Stims(object):
                     self.next_stim = None
                 return self.stim_checker(time_stamp)
             else:
-                return self.cur_stim[[3, 4, 1]]
+                return self.cur_stim[[3, 4, 1, 2]
 
 def compute_refractory_violations(spikes, refrac_T=1.0, sample_rate):
     #Look for refractory period violations
@@ -100,7 +100,7 @@ def main():
         stims['stim_name'] = f['event_types']['Stimulus']['text'][1::2]
         stims['stim_presentation'] = stims[stims['code'] == '<']['stim_name'].map(StimCounter().count)
         stims.reset_index(drop=True, inplace=True)
-        spikes['stim_name'], spikes['stim_presentation'], spikes['stim_time_stamp'] = zip(*spikes["time_stamp"].map(Stims(stims).stim_checker))
+        spikes['stim_name'], spikes['stim_presentation'], spikes['stim_time_stamp'], spikes['stim_end_time_stamp'] = zip(*spikes["time_stamp"].map(Stims(stims).stim_checker))
         spikes['stim_aligned_time_stamp'] = spikes['time_stamp'].values.astype('int') - spikes['stim_time_stamp'].values
         spikes['stim_aligned_time_stamp_seconds'] = spikes['stim_aligned_time_stamp'] / sample_rate
         spikes_wo_bad = spikes[spikes['cluster_group'] != 0]
