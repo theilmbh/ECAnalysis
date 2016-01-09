@@ -79,8 +79,8 @@ def make_raster(events, cell, stim, experiment, plot_args):
 	return raster
 
 def save_raster(spike_raster, dest, cell, stim, exp):
-	print('Saving Raster')
 	raster_fname = "cell_" + str(cell['cellid']) +"_stim_" + stim['stim_name'] + "_raster.png"
+	print('Saving Raster: ' + raster_fname)
 	save_f = os.path.join(dest, raster_fname)
 	spike_raster.savefig(save_f)
 	plt.close(spike_raster)

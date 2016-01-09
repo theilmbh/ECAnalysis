@@ -96,10 +96,6 @@ def main():
         spikes_wo_bad = spikes[spikes['cluster_group'] != 0]
         spikes_wo_bad.to_pickle(destfile)
 
-
-
-
-
 def compute_refractory_violations(spikes, refrac_T, sample_rate):
     #Look for refractory period violations
     refrac_samps = (refrac_T / 1000.0) * sample_rate
