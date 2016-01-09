@@ -36,16 +36,20 @@ def main():
 		for stimnm in stim_names:
 			celldata = spikedata[spikedata['cluster'] == cellind]
 			cellstimdata = celldata[celldata['stim_name'] == stimnm]
+			stim_starts = cellstimdata['stim_time_stamp'].values
+			stim_ends = cellstimdata['stim_end_time_stamp'].values
+
 			cellinfo = {'cellid': cellind, 'sort_type': 'Unimplemented'}
-			stiminfo = {'stim_name': stimnm, 'start_time': 0.0, 'end_time': 1.0}
+			stiminfo = {'stim_name': stimnm, 'start_times': stim_starts, 'end_times': stim_ends}
 			expinfo = {'bird': 'Unimplemented', 'site': 'unimplemented'}
+			plot_args = {'prestim': 2.0, 'poststim': 2.0}
 
 			events = cellstimdata[['stim_aligned_time_stamp_seconds', 'stim_presentation']]
 			events.rename(columns={'stim_aligned_time_stamp_seconds': 'TOE', 'stim_presentation': 'trial'}, inplace=True)
-			rasterplot = make_raster(events, cellinfo, stiminfo, expinfo)
+			rasterplot = make_raster(events, cellinfo, stiminfo, expinfo, plot_args)
 			save_raster(rasterplot, dest, cellinfo, stiminfo, expinfo)
 
-def make_raster(events, cell, stim, experiment):
+def make_raster(events, cell, stim, experiment, plot_args):
 	''' Generate a well-formated raster plot with all metadata
 
 		events: DataFrame with TOE, trial columns

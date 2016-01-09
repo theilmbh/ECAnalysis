@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # This script takes a manually sorted kwik file and extracts the Good, MUA, and Unsorted cells.
 # It creates a pandas data frame that allows for easy manipulation of TOEs and corresponding stimuli.
 # Brad Theilma 010716
@@ -14,6 +15,7 @@ import glob
 import os
 
 def get_args():
+    print('getting args')
     parser = argparse.ArgumentParser(description='Convert manually sorted KWIK file to pandas DataFrame')
     parser.add_argument('kwikfile', type=str, nargs='?', help='Path to manually sorted KWIK file to convert')
     parser.add_argument('destination_dir', type=str, nargs='?', help='Directory in which to place the pandas DataFrame')
@@ -56,30 +58,18 @@ class Stims(object):
                     self.next_stim = None
                 return self.stim_checker(time_stamp)
             else:
-                return self.cur_stim[[3, 4, 1, 2]
-
-def compute_refractory_violations(spikes, refrac_T=1.0, sample_rate):
-    #Look for refractory period violations
-    refrac_samps = (refrac_T / 1000.0) * sample_rate
-    refractory_violations = pd.DataFrame({'cluster' : spikes['cluster'].unique()})
-    for cluster in spikes_wo_bad['cluster'].unique():
-        spike_times_this_cluster = 1.0*spikes.loc[spikes_wo_bad['cluster'] == cluster, 'time_stamp'].values.astype('int')
-        spikes_dt = spike_times_this_cluster[1:] - spike_times_this_cluster[0:-1]
-        n_violations = np.size(np.nonzero(1.0*(spikes_dt < refrac_samps)))
-        violation_prop = 100.0*n_violations / np.size(spike_times_this_cluster)
-        refractory_violations.loc[refractory_violations['cluster'] == cluster, 'violations'] = n_violations
-        refractory_violations.loc[refractory_violations['cluster'] == cluster, 'percentage'] = violation_prop
-
+                return self.cur_stim[[3, 4, 1, 2]]
 
 def main():
     args = get_args()
     kwikfile = os.path.abspath(args.kwikfile)
     dest = os.path.abspath(args.destination_dir)
 
-    kwikfilename = os.path.splitext(os.path.basename(kwikfile))
-    destfilename = kwikfilename
-    destfile = os.path.join(dest, destfilename)
+    kwikfilename, kwikext = os.path.splitext(os.path.basename(kwikfile))
 
+    destfilename = kwikfilename + '_pd'
+    destfile = os.path.join(dest, destfilename)
+    print("starting to extract data")
     with h5py.File(kwikfile, 'r') as f:
         sample_rate = None
         for recording in f['recordings']:
@@ -110,3 +100,17 @@ def main():
 
 
 
+def compute_refractory_violations(spikes, refrac_T, sample_rate):
+    #Look for refractory period violations
+    refrac_samps = (refrac_T / 1000.0) * sample_rate
+    refractory_violations = pd.DataFrame({'cluster' : spikes['cluster'].unique()})
+    for cluster in spikes_wo_bad['cluster'].unique():
+        spike_times_this_cluster = 1.0*spikes.loc[spikes_wo_bad['cluster'] == cluster, 'time_stamp'].values.astype('int')
+        spikes_dt = spike_times_this_cluster[1:] - spike_times_this_cluster[0:-1]
+        n_violations = np.size(np.nonzero(1.0*(spikes_dt < refrac_samps)))
+        violation_prop = 100.0*n_violations / np.size(spike_times_this_cluster)
+        refractory_violations.loc[refractory_violations['cluster'] == cluster, 'violations'] = n_violations
+        refractory_violations.loc[refractory_violations['cluster'] == cluster, 'percentage'] = violation_prop
+
+if __name__ == '__main__':
+    main()
