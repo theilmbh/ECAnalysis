@@ -43,13 +43,7 @@ def main():
 			events = cellstimdata[['stim_aligned_time_stamp_seconds', 'stim_presentation']]
 			events.rename(columns={'stim_aligned_time_stamp_seconds': 'TOE', 'stim_presentation': 'trial'}, inplace=True)
 			rasterplot = make_raster(events, cellinfo, stiminfo, expinfo)
-			
-			raster_fname = "cell_" + str(cellinfo['cellid']) +"_stim_" + stiminfo['stim_name'] + "_raster.png"
-			save_f = os.path.join(dest, raster_fname)
-			rasterplot.savefig(save_f)
-			plt.close(rasterplot)
-
-
+			save_raster(rasterplot, dest, cellinfo, stiminfo, expinfo)
 
 def make_raster(events, cell, stim, experiment):
 	''' Generate a well-formated raster plot with all metadata
