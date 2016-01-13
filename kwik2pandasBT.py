@@ -67,7 +67,7 @@ def main():
 
     kwikfilename, kwikext = os.path.splitext(os.path.basename(kwikfile))
 
-    destfilename = kwikfilename + '_pd'
+    destfilename = kwikfilename + '.pd'
     destfile = os.path.join(dest, destfilename)
     print("starting to extract data")
     with h5py.File(kwikfile, 'r') as f:
