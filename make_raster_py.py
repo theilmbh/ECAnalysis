@@ -18,29 +18,25 @@ sort_types_dict = {'2': 'Good', '0': 'Noise', '1': 'MUA', '3': 'Unsorted'}
 
 def get_args():
     parser = argparse.ArgumentParser(description='Convert manually sorted KWIK file to pandas DataFrame')
-    parser.add_argument('datafile', nargs='?', help='Path to directory with PANDAS DataFrame containing spike data')
-    parser.add_argument('dest', default='./', nargs='?', help='Directory in which to place raster plots')
+    parser.add_argument('datadir', nargs='?', help='Path to directory with PANDAS DataFrame containing spike data')
+    parser.add_argument('destdir', default='./', nargs='?', help='Directory in which to place raster plots')
 
     return parser.parse_args()
 
 def main():
 	print('Make Raster')
-	args = get_args()
-	datafile = os.path.abspath(args.datafile)
-	dest = os.path.abspath(args.dest)
-	datafiledir, datafilename = os.path.split(datafile)
-	exp_name, exp_ext = os.path.splitext(datafilename)
+    args = get_args()
+    data_folder = os.path.abspath(args.datadir)
+    dest_folder = os.path.abspath(args.destdir)
 
-	info_json = os.path.join(datafiledir, exp_name + "_info.json")
-	#info_json = glob.glob(os.path.join(datadir, '*_info.json'))[0]
-	with open(info_json, 'r') as f:
-		info = json.load(f)
+    info_json = glob.glob(os.path.join(kwik_folder,'*_info.json'))[0]
+    with open(info_json, 'r') as f:
+        info = json.load(f)
 
-	#[AP, L, Z] = zip(info['pen']['anterior'], info['pen']['lateral'])
-	#pandas_datafile = os.path.join(datadir, info['name']+'.pd')
+    pd_data_file = os.path.join(kwik_folder,info['name']+'.pd')
 
 	# open the datafile
-	spikedata = pd.read_pickle(datafile)
+	spikedata = pd.read_pickle(pd_data_file)
 	# get number of units, number of stims
 	cells = spikedata['cluster'].unique()
 	stim_names = spikedata['stim_name'].unique()

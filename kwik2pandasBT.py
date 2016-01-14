@@ -17,8 +17,8 @@ import os
 def get_args():
     print('getting args')
     parser = argparse.ArgumentParser(description='Convert manually sorted KWIK file to pandas DataFrame')
-    parser.add_argument('kwikfile', type=str, nargs='?', help='Path to manually sorted KWIK file to convert')
-    parser.add_argument('destination_dir', type=str, nargs='?', help='Directory in which to place the pandas DataFrame')
+    parser.add_argument('kwikdir', type=str, nargs='?', help='Path to manually sorted KWIK file to convert')
+    parser.add_argument('destdir', type=str, nargs='?', help='Directory in which to place the pandas DataFrame')
 
     return parser.parse_args()
 
@@ -62,14 +62,19 @@ class Stims(object):
 
 def main():
     args = get_args()
-    kwikfile = os.path.abspath(args.kwikfile)
-    dest = os.path.abspath(args.destination_dir)
 
-    kwikfilename, kwikext = os.path.splitext(os.path.basename(kwikfile))
+    kwik_folder = os.path.abspath(args.kwikdir)
+    dest_folder = os.path.abspath(args.destdir)
 
-    destfilename = kwikfilename + '.pd'
-    destfile = os.path.join(dest, destfilename)
-    print("starting to extract data")
+    info_json = glob.glob(os.path.join(kwik_folder,'*_info.json'))[0]
+    with open(info_json, 'r') as f:
+        info = json.load(f)
+
+    kwik_data_file = os.path.join(kwik_folder,info['name']+'.kwik')
+
+    destfilename = info['name'] + '.pd'
+    destfile = os.path.join(dest_folder, destfilename)
+    print("Extracting data: %s" % kwik_data_file)
     with h5py.File(kwikfile, 'r') as f:
         sample_rate = None
         for recording in f['recordings']:
@@ -94,6 +99,7 @@ def main():
         spikes['stim_aligned_time_stamp'] = spikes['time_stamp'].values.astype('int') - spikes['stim_time_stamp'].values
         spikes['stim_aligned_time_stamp_seconds'] = spikes['stim_aligned_time_stamp'] / sample_rate
         spikes_wo_bad = spikes[spikes['cluster_group'] != 0]
+        print("Saving data to: %s", destfile)
         spikes_wo_bad.to_pickle(destfile)
 
 def compute_refractory_violations(spikes, refrac_T, sample_rate):
