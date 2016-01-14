@@ -13,6 +13,8 @@ import matplotlib.pyplot as plt
 import argparse
 import glob
 import os
+try: import simplejson as json
+except ImportError: import json
 
 def get_args():
     print('getting args')
