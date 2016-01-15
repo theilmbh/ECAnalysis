@@ -35,6 +35,7 @@ def main():
 
 	pd_data_file = os.path.join(data_folder,info['name']+'.pd')
 
+
 	# open the datafile
 	spikedata = pd.read_pickle(pd_data_file)
 	# get number of units, number of stims
@@ -65,7 +66,7 @@ def main():
 			events = cellstimdata[['stim_aligned_time_stamp_seconds', 'stim_presentation']]
 			events.rename(columns={'stim_aligned_time_stamp_seconds': 'TOE', 'stim_presentation': 'trial'}, inplace=True)
 			rasterplot = make_raster(events, cellinfo, stiminfo, expinfo, plot_args)
-			save_raster(rasterplot, dest, cellinfo, stiminfo, expinfo)
+			save_raster(rasterplot, dest_folder, cellinfo, stiminfo, expinfo)
 
 def make_raster(events, cell, stim, experiment, plot_args):
 	''' Generate a well-formated raster plot with all metadata
