@@ -77,7 +77,7 @@ def main():
     destfilename = info['name'] + '.pd'
     destfile = os.path.join(dest_folder, destfilename)
     print("Extracting data: %s" % kwik_data_file)
-    with h5py.File(kwikfile, 'r') as f:
+    with h5py.File(kwik_data_file, 'r') as f:
         sample_rate = None
         for recording in f['recordings']:
             assert sample_rate is None or sample_rate == f['recordings'][recording].attrs['sample_rate']
