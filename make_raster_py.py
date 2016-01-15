@@ -29,11 +29,11 @@ def main():
 	data_folder = os.path.abspath(args.datadir)
 	dest_folder = os.path.abspath(args.destdir)
 
-	info_json = glob.glob(os.path.join(kwik_folder,'*_info.json'))[0]
+	info_json = glob.glob(os.path.join(data_folder,'*_info.json'))[0]
 	with open(info_json, 'r') as f:
 		info = json.load(f)
 
-	pd_data_file = os.path.join(kwik_folder,info['name']+'.pd')
+	pd_data_file = os.path.join(data_folder,info['name']+'.pd')
 
 	# open the datafile
 	spikedata = pd.read_pickle(pd_data_file)
