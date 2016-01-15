@@ -11,7 +11,6 @@ import matplotlib.pyplot as plt
 import argparse
 import glob
 import os
-import seaborn as sns
 try: import simplejson as json
 except ImportError: import json
 
