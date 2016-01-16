@@ -2,9 +2,6 @@
 % information and store in one well formatted mat file
 % Brad Theilman August/September 2015
 
-clear
-close all
-
 function kwik2mat(kwikfile, outfile)
 % get information
 kwikinfo = h5info(kwikfile);
@@ -26,7 +23,7 @@ for i = 1:length(clusters)
     cluster_group = h5readatt(kwikfile, cluster_attr_path, 'cluster_group');
     disp(cluster_group);
     %cluster_group 2 is Good
-    % 1 is MUA
+    % 1 is MU
     if cluster_group ~= 0
         good_cluster_inds(i) = 1;
         
