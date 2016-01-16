@@ -5,8 +5,7 @@
 clear
 close all
 
-kwikfile = './st1215/kwdfiles/pen2_latestpipeline/st1215_cat_P01_S01_2ndPen.kwik';
-
+function kwik2mat(kwikfile, outfile)
 % get information
 kwikinfo = h5info(kwikfile);
 
@@ -28,7 +27,7 @@ for i = 1:length(clusters)
     disp(cluster_group);
     %cluster_group 2 is Good
     % 1 is MUA
-    if cluster_group == 1
+    if cluster_group ~= 0
         good_cluster_inds(i) = 1;
         
     end
@@ -36,6 +35,7 @@ for i = 1:length(clusters)
 end
 % vector containing IDs of good clusters
 good_cluster_ids = clusters(logical(good_cluster_inds));
+cluster_classes = cluster_group(logical(good_cluster_inds));
 
 %% Now, pull all spikes that belong to good clusters
 good_spikes = cell(length(good_cluster_ids), 2);
@@ -113,6 +113,7 @@ for unit_num = 1:length(good_cluster_ids)
     
     unit_entry = struct;
     unit_entry.id = good_cluster_ids(unit_num);
+    unit_entry.sort_class = cluster_classes(unit_num)
     stims = cell(nstims, 1);
     
     % Loop through each stimulus
@@ -158,7 +159,7 @@ end
 %% Format output file name
 
 data_to_save = struct();
-data_to_save.birdID = 'st1215';
+data_to_save.birdID = '';
 data_to_save.penetrationID = 1;
 data_to_save.siteID = 1;
 data_to_save.siteID = 1;
@@ -170,8 +171,8 @@ data_to_save.fs = 31250;
 data_to_save.toedata = toedata;
 
 sav_date = datestr(now, 30);
-outfile_name = strcat('./st1215/good_data/pen2/more_merged/st1215_cat_P01_S01_2ndPen_moremerged_MUA', sav_date, '.mat');
-save(outfile_name, 'data_to_save');
 
+save(outfile, 'toedata');
 
+end
 
