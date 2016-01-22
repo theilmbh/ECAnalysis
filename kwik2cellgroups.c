@@ -30,12 +30,18 @@ spike_t *spike_list_make_empty()
 	return list;
 }
 
-void spike_list_add(spike_t *list, spike_t *spike)
+spike_t *spike_list_add(spike_t *list, spike_t *spike)
 {
-	if (list->next == NULL) {
-		list->next == spike;
+	if (list == NULL) {
+		return spike;
 	} else {
-		spike_list_add(list->next, spike);
+		if (list->next == NULL) {
+			list->next = spike;
+			spike->prev = list;
+		} else {
+			spike_list_add(list->next, spike);
+		}
+		return list;
 	}
 }
 
@@ -74,4 +80,5 @@ int spikecmp(spike_t *spike1, spike_t *spike2)
 		return 0;
 	}
 }
+
 
