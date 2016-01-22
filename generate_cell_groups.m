@@ -3,7 +3,7 @@
 clear
 close all
 
-load('st1215_cat_P01_S01_2ndPen_moremerged_20151102T090824_popvec.mat');
+load('/Users/brad/Documents/Research/GentnerLab/st1215_cat_P01_S01_2ndPen_moremerged_20151102T090824_popvec.mat');
 
 %population_vectors(ncell, nwin, nstim, nbinstart);
 [ncell, nwin, nstim, n_bin_start] = size(population_vectors);
