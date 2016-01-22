@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # This script makes various kinds of raster plots from pandas data and saves them
-# Brad Theilman 010716
+# Brad Theilman 012216
 
 import h5py
 import pandas as pd
@@ -13,6 +13,7 @@ import glob
 import os
 try: import simplejson as json
 except ImportError: import json
+import spike_funcs as btsf
 
 sort_types_dict = {'2': 'Good', '0': 'Noise', '1': 'MUA', '3': 'Unsorted'}
 
@@ -31,84 +32,56 @@ def main():
 
 	info_json = glob.glob(os.path.join(data_folder,'*_info.json'))[0]
 	with open(info_json, 'r') as f:
-		info = json.load(f)
+		experiment = json.load(f)
 
 	pd_data_file = os.path.join(data_folder,info['name']+'.pd')
-
-
 	# open the datafile
 	spikedata = pd.read_pickle(pd_data_file)
+	make_raster(spikedata, experiment)
+
+
+def make_raster(spike_data, experiment, prestim, poststim):
 	# get number of units, number of stims
-	cells = spikedata['cluster'].unique()
-	stim_names = spikedata['stim_name'].unique()
-	nstim = np.size(stim_names)
+	cells = btsf.get_cluids(spikedata)
+	stim_names = btsf.get_stim_names(spikedata)
+	for stimn in stim_names:
+		ntrials = btsf.get_num_trials(spikedata, stimn)
 
-	for cellind in cells:
-		for stimnm in stim_names:
-			celldata = spikedata[spikedata['cluster'] == cellind]
-			cellstimdata = celldata[celldata['stim_name'] == stimnm]
+		for cluid in cells:
+			cellstimdata = btsf.find_spikes_by_stim_name(btsf.find_spikes_by_cluid(spikedata, cluid), stimnm)
+			cell_clugroup = btsf.get_clugroups(cellstimdata)
+			raster = plt.figure()
 
-			stim_starts = cellstimdata['stim_time_stamp'].values
-			stim_ends = cellstimdata['stim_end_time_stamp'].values
-			stim_start_samps = np.unique(stim_starts)[0]
-			stim_end_samps = np.unique(stim_ends)[0]
-			stim_start = (stim_start_samps - stim_start_samps)/info['fs']
-			stim_end = (stim_end_samps - stim_start_samps)/info['fs']
+			for trialnum in range(ntrials):
+				spikes_to_plot = btsf.find_spikes_stim_trial(cellstimdata, stimn, trialnum)
+				[stim_start_samps, stim_end_samps] = btsf.get_stim_times(cellstimdata, stimnm, trialnum)
+				stim_start = (stim_start_samps - stim_start_samps)/info['fs']
+				stim_end = (stim_end_samps - stim_start_samps)/info['fs']
+				nspikes = btsf.get_num_spikes(spikes_to_plot)
+				spiketimes = btsf.get_spike_times_seconds_stim_aligned(spikes_to_plot)
+				ylimits = [trialnum, trialnum+1]
 
-			cell_sort_type = np.unique(cellstimdata['cluster_group'].values)
-			assert (np.size(cell_sort_type) == 1), "Cell has multiple sort types"
+				for j in range(nspikes):
+					ydata = ylimits
+					xdata = [spiketimes[j], spiketimes[j]]
+					plt.plot(xdata, ydata, 'b')
 
-			cellinfo = {'cellid': cellind, 'sort_type': sort_types_dict[str(cell_sort_type[0])]}
-			stiminfo = {'stim_name': stimnm, 'start': stim_start, 'end': stim_end}
-			expinfo = {'bird': info['name'], 'site': '', 'fs': info['fs']}
-			plot_args = {'prestim': 2.0, 'poststim': 2.0}
+				stim_start_x = [stim_start, stim_start]
+				stim_end_x = [stim_end, stim_end]
+				stim_start_y = [0, ntrials]
+				stim_end_y = [0, ntrials]
 
-			events = cellstimdata[['stim_aligned_time_stamp_seconds', 'stim_presentation']]
-			events.rename(columns={'stim_aligned_time_stamp_seconds': 'TOE', 'stim_presentation': 'trial'}, inplace=True)
-			rasterplot = make_raster(events, cellinfo, stiminfo, expinfo, plot_args)
-			save_raster(rasterplot, dest_folder, cellinfo, stiminfo, expinfo)
+				plt.plot(stim_start_x, stim_start_y, 'r')
+				plt.plot(stim_end_x, stim_end_y, 'r')
+				plt.title("Bird: " + experiment['name'] + " Cell: " + str(cluid) + " Type: " + str(cell_clugroup) + " Stim: " + stimn)
+				plt.xlabel('Time (s)')
+				plt.ylabel('Trial')
+				plt.xlim(-1.0*prestim, poststim + stim_end)
+				plt.ylim(0, ntrials) 
+				save_raster(raster, dest, experiment['name'], cluid, stimn)
 
-def make_raster(events, cell, stim, experiment, plot_args):
-	''' Generate a well-formated raster plot with all metadata
-
-		events: DataFrame with TOE, trial columns
-		cell: Dict with cellid, sort_type
-		stim: Dict with stim_name, StartTime, EndTime
-		experiment: Dict with Bird, Site XYZ, DataFrame
-	'''
-
-	raster = plt.figure()
-	ntrials = events['trial'].unique().size
-	
-	for i in range(ntrials):
-		spikes_this_trial = events.loc[events['trial'] == i, 'TOE'].values.astype('float')
-		# get number of spikes in this trial
-		nspikes = np.size(spikes_this_trial)
-		# generate ydata for this trial
-		ylimits = [i, i+1]
-
-		for j in range(nspikes):
-			ydata = ylimits
-			xdata = [spikes_this_trial[j], spikes_this_trial[j]]
-			plt.plot(xdata, ydata, 'b')
-
-	stim_start_x = [stim['start'], stim['start']]
-	stim_start_y = [0, ntrials]
-	stim_end_x = [stim['end'], stim['end']]
-	stim_end_y = [0, ntrials]
-	plt.plot(stim_start_x, stim_start_y, 'r')
-	plt.plot(stim_end_x, stim_end_y, 'r')
-
-	plt.title("Bird: " + experiment['bird'] + " Cell: " + str(cell['cellid']) + " Type: " + str(cell['sort_type']) + " Stim: " + stim['stim_name'])
-	plt.xlabel('Time (s)')
-	plt.ylabel('Trial')
-	plt.xlim(-1.0*plot_args['prestim'], plot_args['poststim'] + stim['end'])
-	plt.ylim(0, ntrials)
-
-	return raster
-
-def save_raster(spike_raster, dest, cell, stim, exp):
-	raster_fname = exp['bird'] + "_cell_" + str(cell['cellid']) +"_stim_" + stim['stim_name'] + "_raster.png"
+def save_raster(spike_raster, dest, bird, cell, stim):
+	raster_fname = bird + "_cell_" + str(cell) +"_stim_" + stim + "_raster.png"
 	print('Saving Raster: ' + raster_fname)
 	save_f = os.path.join(dest, raster_fname)
 	spike_raster.savefig(save_f)
