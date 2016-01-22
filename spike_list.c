@@ -17,7 +17,7 @@ typedef struct spike_t {
 	int cluster_group;
 } spike_t;
 
-#define sl_t spike_t; /* make a spike list type */
+#define spike_list_t spike_t; /* make a spike list type */
 
 typedef struct trial_t {
 	trial_t *prev;
@@ -94,6 +94,12 @@ int spikecmp(spike_t *spike1, spike_t *spike2)
 	} else {
 		return 0;
 	}
+}
+
+find_spikes_by_cluid(spike_list_t *list, int cluid)
+{
+	/* returns a spike_list that contains all spikes from given list with given cluid */
+	
 }
 
 
