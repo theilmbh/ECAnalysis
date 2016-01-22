@@ -22,6 +22,9 @@ def get_cluids(spike_data):
 	cluids = np.unique(spike_data['cluster'].values)
 	return cluids
 
+def get_clugroups(spike_data):
+	return np.squeeze(np.unique(spike_data['cluster_group'].values))
+
 def find_spikes_by_stim_name(spike_data, stim_name):
 	# returns a list of all spikes with stim_name
 	return spike_data[spike_data['stim_name'] == stim_name]
@@ -29,11 +32,17 @@ def find_spikes_by_stim_name(spike_data, stim_name):
 def get_stim_names(spike_data):
 	return np.unique(spike_data['stim_name'].values)
 
+def get_num_trials(spike_data, stim_name):
+	# Get the number of presentations of the stim_name
+	spike_data_stim = find_spikes_by_stim_name(spike_data, stim_name)
+	presentations = spike_data_stim['stim_presentation'].values
+	return np.max(presentations) + 1
+
 def find_spikes_by_stim_trial(spike_data, stim_name, trialnum):
 	# returns a list of spikes under given stimuli in given repetition of that stimuli
 	# first, get spikes by stim name
 	spike_data_stim = find_spikes_by_stim_name(spike_data, stim_name)
-	return spike_data_stim[spike_data_stim['stim_presentation'] == trialnum-1]
+	return spike_data_stim[spike_data_stim['stim_presentation'] == trialnum]
 
 def get_cluster_group(spike_data, win_l, win_h):
 	# returns a list of all cluster ids that spiked within [win_l, win_h]
@@ -52,3 +61,12 @@ def get_stim_times(spike_data, stim_name, trialnum):
 	stim_start = np.squeeze(stim_starts).tolist()
 	stim_end = np.squeeze(stim_ends).tolist()
 	return [stim_start, stim_end]
+
+def get_num_spikes(spike_data):
+	return np.size(spike_data['time_stamp'].values)
+
+def get_spike_times_samples(spike_data):
+	return spike_data['time_stamp'].values
+
+def get_spike_times_seconds_stim_aligned(spike_data):
+	return spike_data['stim_aligned_time_stamp_seconds'].values
