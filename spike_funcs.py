@@ -53,9 +53,9 @@ def get_cluster_group(spike_data, win_l, win_h):
 def get_stim_times(spike_data, stim_name, trialnum):
 	# Returns the stim start and stim end times for a given repetition of stim_name
 	spike_data_stim = find_spikes_by_stim_trial(spike_data, stim_name, trialnum)
-	stim_starts = np.unique(spike_data_stim['stim_time_stamp'].values)
+	stim_starts = np.unique(spike_data_stim['stim_time_stamp'].values.astype(int))
 	assert np.size(stim_starts) == 1, "Too many stim starts!"
-	stim_ends = np.unique(spike_data_stim['stim_end_time_stamp'].values)
+	stim_ends = np.unique(spike_data_stim['stim_end_time_stamp'].values.astype(int))
 	assert np.size(stim_ends) == 1, "Too many stim ends!"
 
 	stim_start = np.squeeze(stim_starts).tolist()
