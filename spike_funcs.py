@@ -68,7 +68,7 @@ def get_stim_duration(spike_data, stim_name, trialnum):
 	stim_starts = np.unique(spike_data_stim['stim_time_stamp'].values.astype(int))	
 	stim_ends = np.unique(spike_data_stim['stim_end_time_stamp'].values.astype(int))
 	stim_durations = np.unique(stim_ends - stim_starts)
-	if (diff(stim_durations) < 5).all():
+	if (np.diff(stim_durations) < 5).all():
 		return max(np.squeeze(stim_durations).tolist())
 	else:
 		print("Stimuli duration differences outside bounds\n")
