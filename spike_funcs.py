@@ -62,6 +62,14 @@ def get_stim_times(spike_data, stim_name, trialnum):
 	stim_end = np.squeeze(stim_ends).tolist()
 	return [stim_start, stim_end]
 
+def get_stim_duration(spike_data, stim_name, trialnum):
+	# Returns the duration of stim given by stim_name on trial trialnum
+	spike_data_stim = find_spikes_by_stim_trial(spike_data, stim_name, trialnum)
+	stim_starts = np.unique(spike_data_stim['stim_time_stamp'].values.astype(int))	
+	stim_ends = np.unique(spike_data_stim['stim_end_time_stamp'].values.astype(int))
+	stim_durations = np.unique(stim_ends - stim_starts)
+	return np.squeeze(stim_duratons).tolist()
+
 def get_num_spikes(spike_data):
 	return np.size(spike_data['time_stamp'].values)
 
