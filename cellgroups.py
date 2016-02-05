@@ -79,11 +79,13 @@ def win_subdivide(win, nstarts, dt, fs):
 	winL, winH = win
 	a = range(nstarts)
 	subwin_starts = np.multiply(a, np.floor(1.0*dtsamps/nstarts)) + winL
-	subwin_s = ()
+	subwin=[]
 	for wins in subwin_starts:
-	    subwin_s = np.hstack((subwin_s, np.arange(wins, winH, dtsamps)))
-	    subwin_e = subwin_s + dtsamps
-	subwin = np.vstack((subwin_s, subwin_e))
+	    subwin_s = np.arange(wins, winH, dtsamps)
+	    for s in subwin_s:
+	        e = s+dtsamps
+	        winentry = [s, e]
+	        subwin.append(winentry)
 	return subwin
 
 def write_vert_list_to_perseus(vert_list, destdir, stimn, trialnum, bird):
