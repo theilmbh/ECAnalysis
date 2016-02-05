@@ -63,7 +63,7 @@ def make_cell_groups(spikedata, win_dt, win_n, prestim_dt, fs):
 			for winl, winh in prestim_cg_win_list:
 				cgs = spf.get_cluster_group(trialdata, winl, winh)
 				prestim_vert_list.add(tuple(cgs))
-				
+
 			print('- Writing perseus input files\n')	
 			write_vert_list_to_perseus(stim_period_vert_list, destdir, stim, trial, bird)
 			write_vert_list_to_perseus(prestim_vert_list, destdir, 'pretrial'+stim, trial, bird)
@@ -75,6 +75,16 @@ def win_subdivide(win, nstarts, dt, fs):
 	# nsubwin x 2 array:   Win1L Win1H
 	#					   Win2L Win2H
 	#					   Win3L Win3H
+	dtsamps = np.floor(dt*fs)
+	winL, winH = win
+	a = range(nstarts)
+	subwin_starts = np.floor(a*(1.0*dtsamps/nstarts) + winL)
+	subwin = np.ndarray()
+	for wins in subwin_starts:
+		subwin_s = subwin.append(np.arange(wins, winH, dtsamps))
+	subwin_e = subwin_s + dtsamps
+	subwin = [subwin_s, subwin_e]
+	return subwin
 
 def write_vert_list_to_perseus(vert_list, destdir, stimn, trialnum, bird):
 	# first create the output file name:
