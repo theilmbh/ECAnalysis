@@ -93,7 +93,7 @@ def write_vert_list_to_perseus(vert_list, destdir, stimn, trialnum, bird):
 	fname = bird + '_' + stimn + '_' + str(trialnum) +'.pers'
 	fname = os.path.join(destdir, fname)
 
-	with open(fname) as fd:
+	with open(fname, 'w') as fd:
 		#write num coords per vertex
 		fd.write('1\n')
 		for grp in vert_list:
