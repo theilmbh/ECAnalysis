@@ -75,15 +75,15 @@ def win_subdivide(win, nstarts, dt, fs):
 	# nsubwin x 2 array:   Win1L Win1H
 	#					   Win2L Win2H
 	#					   Win3L Win3H
-	dtsamps = np.floor(dt*fs)
+	dtsamps = np.floor(dt*fs/1000.)
 	winL, winH = win
 	a = range(nstarts)
-	subwin_starts = np.floor(a*(1.0*dtsamps/nstarts) + winL)
-	subwin = np.ndarray()
+	subwin_starts = np.multiply(a, np.floor(1.0*dtsamps/nstarts)) + winL
+	subwin_s = ()
 	for wins in subwin_starts:
-		subwin_s = subwin.append(np.arange(wins, winH, dtsamps))
-	subwin_e = subwin_s + dtsamps
-	subwin = [subwin_s, subwin_e]
+	    subwin_s = np.hstack((subwin_s, np.arange(wins, winH, dtsamps)))
+	    subwin_e = subwin_s + dtsamps
+	subwin = np.vstack((subwin_s, subwin_e))
 	return subwin
 
 def write_vert_list_to_perseus(vert_list, destdir, stimn, trialnum, bird):
