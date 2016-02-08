@@ -18,6 +18,7 @@ def get_args():
     parser.add_argument('-n', dest='numstarts', default=5, help='Number of window starts')
     parser.add_argument('-p', dest='prestim', default=2.0, help='Prestim time period in seconds')
     parser.add_argument('-f', dest='fs', default=31250.0, help='Sampling rate in Hertz')
+    parser.add_argument('-c', dest='clu_group', default='gm', help 'Cluster classes to included: g=Good, m=MUA, gm=Good + MUA')
     return parser.parse_args()
 
 def main():
@@ -29,11 +30,18 @@ def main():
 	win_n = args.numstarts
 	win_dt = args.win_dt #milliseconds
 	fs = args.fs
+	clu_group = args.clu_group
+
+	if clu_group == 'g':
+		spikedata = spf.find_spikes_by_clu_group(spikedata, 'Good')
+	else if clu_group == 'm':
+		spikedata = spf.find_spikes_by_clu_group(spikedata, 'MUA')
+	
 	print('Running make_cell_groups...\n')
-	make_cell_groups(spikedata, win_dt, win_n, prestim_dt, fs)
+	make_cell_groups(spikedata, win_dt, win_n, prestim_dt, fs, clu_group)
 
 
-def make_cell_groups(spikedata, win_dt, win_n, prestim_dt, fs):
+def make_cell_groups(spikedata, win_dt, win_n, prestim_dt, fs, clu_group):
 	stim_names = spf.get_stim_names(spikedata)
 	for stim in stim_names:
 		ntrials = spf.get_num_trials(spikedata, stim)
@@ -65,8 +73,8 @@ def make_cell_groups(spikedata, win_dt, win_n, prestim_dt, fs):
 				prestim_vert_list.add(tuple(cgs))
 
 			print('- Writing perseus input files\n')	
-			write_vert_list_to_perseus(stim_period_vert_list, destdir, stim, trial, bird)
-			write_vert_list_to_perseus(prestim_vert_list, destdir, 'pretrial'+stim, trial, bird)
+			write_vert_list_to_perseus(stim_period_vert_list, destdir, stim, trial, bird, clu_group)
+			write_vert_list_to_perseus(prestim_vert_list, destdir, 'pretrial'+stim, trial, bird, clu_group)
 			print('DONE\n')
 
 
@@ -88,9 +96,9 @@ def win_subdivide(win, nstarts, dt, fs):
 	        subwin.append(winentry)
 	return subwin
 
-def write_vert_list_to_perseus(vert_list, destdir, stimn, trialnum, bird):
+def write_vert_list_to_perseus(vert_list, destdir, stimn, trialnum, bird, clu_group):
 	# first create the output file name:
-	fname = bird + '_' + stimn + '_' + str(trialnum) +'.pers'
+	fname = bird + '_' + clu_group + '_' + stimn + '_' + str(trialnum) +'.pers'
 	fname = os.path.join(destdir, fname)
 
 	with open(fname, 'w') as fd:
