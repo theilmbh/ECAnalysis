@@ -124,6 +124,7 @@ def write_vert_list_to_perseus(vert_list, destdir, stimn, trialnum, bird, clu_gr
     		vert_str = vert_str.replace(' ', '')
     		vert_str = vert_str.replace(',', ' ')
     		out_str = str(grp_dim) + ' ' + vert_str + ' 1\n'
+    		debug_print('Writing: %s' % out_str)
     		fd.write(out_str)
 
 if __name__ == '__main__':
