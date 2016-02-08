@@ -118,6 +118,8 @@ def write_vert_list_to_perseus(vert_list, destdir, stimn, trialnum, bird, clu_gr
 		for grp in vert_list:
 			#debug_print('Cell group: ' + str(grp) +'\n')
 			grp_dim = len(grp) - 1
+			if grp_dim < 0:
+				continue
 			vert_str = str(grp)
 			vert_str = vert_str.replace('(', '')
 			vert_str = vert_str.replace(')', '')
