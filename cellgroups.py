@@ -35,7 +35,7 @@ def main():
 
 	if clu_group == 'g':
 		spikedata = spf.find_spikes_by_clu_group(spikedata, 'Good')
-	else if clu_group == 'm':
+	elif clu_group == 'm':
 		spikedata = spf.find_spikes_by_clu_group(spikedata, 'MUA')
 	
 	print('Running make_cell_groups...\n')
