@@ -72,10 +72,10 @@ def make_cell_groups(spikedata, win_dt, win_n, prestim_dt, fs, clu_group, destdi
 				# debug_print('WinL: %s 	WinH: %s\n' % (winl, winh))
 				# Get cell groups
 				cgs = spf.get_cluster_group(trialdata, winl, winh)
-				debug_print(str(cgs) + '\n')
+				#debug_print(str(cgs) + '\n')
 				# Convert to tuple and add to the vertex set list. 
 				stim_period_vert_list.add(tuple(cgs))
-				debug_print('Vert list size: %s\n' % len(stim_period_vert_list))
+				#debug_print('Vert list size: %s\n' % len(stim_period_vert_list))
 			
 			debug_print('- Extracting prestim period cell groups\n')
 			for winl, winh in prestim_cg_win_list:
@@ -116,16 +116,16 @@ def write_vert_list_to_perseus(vert_list, destdir, stimn, trialnum, bird, clu_gr
 		#write num coords per vertex
 		fd.write('1\n')
 		for grp in vert_list:
-			debug_print('Cell group: ' + str(grp) +'\n')
+			#debug_print('Cell group: ' + str(grp) +'\n')
 			grp_dim = len(grp) - 1
-    		vert_str = str(grp)
-    		vert_str = vert_str.replace('(', '')
-    		vert_str = vert_str.replace(')', '')
-    		vert_str = vert_str.replace(' ', '')
-    		vert_str = vert_str.replace(',', ' ')
-    		out_str = str(grp_dim) + ' ' + vert_str + ' 1\n'
-    		debug_print('Writing: %s' % out_str)
-    		fd.write(out_str)
+			vert_str = str(grp)
+			vert_str = vert_str.replace('(', '')
+			vert_str = vert_str.replace(')', '')
+			vert_str = vert_str.replace(' ', '')
+			vert_str = vert_str.replace(',', ' ')
+			out_str = str(grp_dim) + ' ' + vert_str + ' 1\n'
+			#debug_print('Writing: %s' % out_str)
+			fd.write(out_str)
 
 if __name__ == '__main__':
 	main()
