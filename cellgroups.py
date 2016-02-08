@@ -39,10 +39,10 @@ def main():
 		spikedata = spf.find_spikes_by_clu_group(spikedata, 'MUA')
 	
 	print('Running make_cell_groups...\n')
-	make_cell_groups(spikedata, win_dt, win_n, prestim_dt, fs, clu_group)
+	make_cell_groups(spikedata, win_dt, win_n, prestim_dt, fs, clu_group, args.destdir)
 
 
-def make_cell_groups(spikedata, win_dt, win_n, prestim_dt, fs, clu_group):
+def make_cell_groups(spikedata, win_dt, win_n, prestim_dt, fs, clu_group, destdir):
 	stim_names = spf.get_stim_names(spikedata)
 	for stim in stim_names:
 		ntrials = spf.get_num_trials(spikedata, stim)
