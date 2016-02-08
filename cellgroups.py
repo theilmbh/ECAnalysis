@@ -19,7 +19,7 @@ def get_args():
     parser.add_argument('-n', dest='numstarts', default=5, help='Number of window starts')
     parser.add_argument('-p', dest='prestim', default=2.0, help='Prestim time period in seconds')
     parser.add_argument('-f', dest='fs', default=31250.0, help='Sampling rate in Hertz')
-    parser.add_argument('-c', dest='clu_group', default='gm', help 'Cluster classes to included: g=Good, m=MUA, gm=Good + MUA')
+    parser.add_argument('-c', dest='clu_group', default='gm', help='Cluster classes to included: g=Good, m=MUA, gm=Good + MUA')
     return parser.parse_args()
 
 def main():
