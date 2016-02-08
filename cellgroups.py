@@ -69,8 +69,10 @@ def make_cell_groups(spikedata, win_dt, win_n, prestim_dt, fs, clu_group, destdi
 
 			debug_print('- Extracting stim period cell groups\n')
 			for winl, winh in stim_cg_win_list:
+				debug_print('WinL: %s 	WinH: %s\n' % (winl, winh))
 				# Get cell groups
 				cgs = spf.get_cluster_group(trialdata, winl, winh)
+				debug_print(str(cgs) + '\n')
 				# Convert to tuple and add to the vertex set list. 
 				stim_period_vert_list.add(tuple(cgs))
 			
