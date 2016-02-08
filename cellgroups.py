@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # cellgroups.py
 
 import numpy as np
