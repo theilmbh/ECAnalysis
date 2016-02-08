@@ -64,8 +64,8 @@ def make_cell_groups(spikedata, win_dt, win_n, prestim_dt, fs, clu_group, destdi
 
 			debug_print('- Creating Windows\n')
 			# Subdivide a given time period into windows
-			prestim_cg_win_list = win_subdivide(prestimwin)
-			stim_cg_win_list = win_subdivide(stimtimes)
+			prestim_cg_win_list = win_subdivide(prestimwin, win_n, win_dt, fs)
+			stim_cg_win_list = win_subdivide(stimtimes, win_n, win_dt, fs)
 
 			debug_print('- Extracting stim period cell groups\n')
 			for winl, winh in stim_cg_win_list:
