@@ -22,7 +22,7 @@ def get_args():
     parser.add_argument('datafile', nargs='?', help='Path to directory with PANDAS DataFrame containing spike data')
     parser.add_argument('destdir', default='./', nargs='?', help='Directory in which to place raster plots')
     parser.add_argument('-t', dest='win_dt', type=float, default=50.0, help='Window size in milliseconds')
-    parser.add_argument('-n', dest='numstarts', type=float, default=5, help='Number of window starts')
+    parser.add_argument('-n', dest='numstarts', type=int, default=5, help='Number of window starts')
     parser.add_argument('-p', dest='prestim', type=float, default=2.0, help='Prestim time period in seconds')
     parser.add_argument('-f', dest='fs', type=float, default=31250.0, help='Sampling rate in Hertz')
     parser.add_argument('-c', dest='clu_group', type=str, default='gm', help='Cluster classes to included: g=Good, m=MUA, gm=Good + MUA')
