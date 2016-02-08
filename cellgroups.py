@@ -58,8 +58,8 @@ def make_cell_groups(spikedata, win_dt, win_n, prestim_dt, fs, clu_group, destdi
 			prestim_vert_list = set()
 
 			debug_print('- Extracting spikes\n')
-			stimtimes = get_stim_times(spikedata, stim, trial)
-			trialdata = find_spikes_by_stim_trial(spikedata, stim, trial)
+			stimtimes = spf.get_stim_times(spikedata, stim, trial)
+			trialdata = spf.find_spikes_by_stim_trial(spikedata, stim, trial)
 			prestimwin = [stimtimes[0] - 2.0, stimtimes[0]]
 
 			debug_print('- Creating Windows\n')
