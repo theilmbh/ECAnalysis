@@ -10,6 +10,9 @@ import spike_funcs as spf
 spikedatafile = "./somefile.pd"
 bird = 'B999'
 
+def debug_print(text):
+	sys.stdout.write(str(text))
+	sys.stdout.flush()
 
 def get_args():
     parser = argparse.ArgumentParser(description='Make cellgroups with a certain window size')
@@ -38,7 +41,7 @@ def main():
 	elif clu_group == 'm':
 		spikedata = spf.find_spikes_by_clu_group(spikedata, 'MUA')
 	
-	print('Running make_cell_groups...\n')
+	debug_print('Running make_cell_groups...\n')
 	make_cell_groups(spikedata, win_dt, win_n, prestim_dt, fs, clu_group, args.destdir)
 
 
@@ -47,36 +50,36 @@ def make_cell_groups(spikedata, win_dt, win_n, prestim_dt, fs, clu_group, destdi
 	for stim in stim_names:
 		ntrials = spf.get_num_trials(spikedata, stim)
 		for trial in range(ntrials):
-			print('make_cell_groups: Stim %s, Trial %s...\n' % (stim, trial))
+			debug_print('make_cell_groups: Stim %s, Trial %s...\n' % (stim, trial))
 			stim_period_vert_list = set()
 			prestim_vert_list = set()
 
-			print('- Extracting spikes\n')
+			debug_print('- Extracting spikes\n')
 			stimtimes = get_stim_times(spikedata, stim, trial)
 			trialdata = find_spikes_by_stim_trial(spikedata, stim, trial)
 			prestimwin = [stimtimes[0] - 2.0, stimtimes[0]]
 
-			print('- Creating Windows\n')
+			debug_print('- Creating Windows\n')
 			# Subdivide a given time period into windows
 			prestim_cg_win_list = win_subdivide(prestimwin)
 			stim_cg_win_list = win_subdivide(stimtimes)
 
-			print('- Extracting stim period cell groups\n')
+			debug_print('- Extracting stim period cell groups\n')
 			for winl, winh in stim_cg_win_list:
 				# Get cell groups
 				cgs = spf.get_cluster_group(trialdata, winl, winh)
 				# Convert to tuple and add to the vertex set list. 
 				stim_period_vert_list.add(tuple(cgs))
 			
-			print('- Extracting prestim period cell groups\n')
+			debug_print('- Extracting prestim period cell groups\n')
 			for winl, winh in prestim_cg_win_list:
 				cgs = spf.get_cluster_group(trialdata, winl, winh)
 				prestim_vert_list.add(tuple(cgs))
 
-			print('- Writing perseus input files\n')	
+			debug_print('- Writing perseus input files\n')	
 			write_vert_list_to_perseus(stim_period_vert_list, destdir, stim, trial, bird, clu_group)
 			write_vert_list_to_perseus(prestim_vert_list, destdir, 'pretrial'+stim, trial, bird, clu_group)
-			print('DONE\n')
+			debug_print('DONE\n')
 
 
 def win_subdivide(win, nstarts, dt, fs):
@@ -101,6 +104,7 @@ def write_vert_list_to_perseus(vert_list, destdir, stimn, trialnum, bird, clu_gr
 	# first create the output file name:
 	fname = bird + '_' + clu_group + '_' + stimn + '_' + str(trialnum) +'.pers'
 	fname = os.path.join(destdir, fname)
+	debug_print('Writing to... %s\n' % fname)
 
 	with open(fname, 'w') as fd:
 		#write num coords per vertex
