@@ -40,9 +40,9 @@ def main():
 	clu_group = args.clu_group
 
 	if clu_group == 'g':
-		spikedata = spf.find_spikes_by_clu_group(spikedata, 'Good')
+		spikedata = spf.find_spikes_by_clugroup(spikedata, 'Good')
 	elif clu_group == 'm':
-		spikedata = spf.find_spikes_by_clu_group(spikedata, 'MUA')
+		spikedata = spf.find_spikes_by_clugroup(spikedata, 'MUA')
 	
 	debug_print('Running make_cell_groups...\n')
 	make_cell_groups(spikedata, win_dt, win_n, prestim_dt, fs, clu_group, args.destdir)
