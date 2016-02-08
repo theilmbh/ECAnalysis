@@ -4,7 +4,9 @@
 import numpy as np
 import pandas as pd 
 import os
+import sys
 
+ssys.path.append('/home/btheilma/code/ECAnalysis/')
 import spike_funcs as spf 
 
 spikedatafile = "./somefile.pd"
