@@ -37,10 +37,10 @@ def main():
 	pd_data_file = os.path.join(data_folder,info['name']+'.pd')
 	# open the datafile
 	spikedata = pd.read_pickle(pd_data_file)
-	make_raster(spikedata, experiment)
+	make_raster(spikedata, experiment, 2.0, 2.0, dest_folder)
 
 
-def make_raster(spike_data, experiment, prestim, poststim):
+def make_raster(spike_data, experiment, prestim, poststim, dest):
 	# get number of units, number of stims
 	cells = btsf.get_cluids(spikedata)
 	stim_names = btsf.get_stim_names(spikedata)
