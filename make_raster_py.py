@@ -53,7 +53,7 @@ def make_raster(spikedata, experiment, prestim, poststim, dest):
 			raster = plt.figure()
 
 			for trialnum in range(ntrials):
-				spikes_to_plot = btsf.find_spikes_stim_trial(cellstimdata, stimn, trialnum)
+				spikes_to_plot = btsf.find_spikes_by_stim_trial(cellstimdata, stimn, trialnum)
 				[stim_start_samps, stim_end_samps] = btsf.get_stim_times(cellstimdata, stimn, trialnum)
 				stim_start = (stim_start_samps - stim_start_samps)/info['fs']
 				stim_end = (stim_end_samps - stim_start_samps)/info['fs']
