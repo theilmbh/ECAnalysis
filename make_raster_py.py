@@ -48,13 +48,13 @@ def make_raster(spikedata, experiment, prestim, poststim, dest):
 		ntrials = btsf.get_num_trials(spikedata, stimn)
 
 		for cluid in cells:
-			cellstimdata = btsf.find_spikes_by_stim_name(btsf.find_spikes_by_cluid(spikedata, cluid), stimnm)
+			cellstimdata = btsf.find_spikes_by_stim_name(btsf.find_spikes_by_cluid(spikedata, cluid), stimn)
 			cell_clugroup = btsf.get_clugroups(cellstimdata)
 			raster = plt.figure()
 
 			for trialnum in range(ntrials):
 				spikes_to_plot = btsf.find_spikes_stim_trial(cellstimdata, stimn, trialnum)
-				[stim_start_samps, stim_end_samps] = btsf.get_stim_times(cellstimdata, stimnm, trialnum)
+				[stim_start_samps, stim_end_samps] = btsf.get_stim_times(cellstimdata, stimn, trialnum)
 				stim_start = (stim_start_samps - stim_start_samps)/info['fs']
 				stim_end = (stim_end_samps - stim_start_samps)/info['fs']
 				nspikes = btsf.get_num_spikes(spikes_to_plot)
