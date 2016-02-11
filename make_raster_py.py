@@ -40,7 +40,7 @@ def main():
 	make_raster(spikedata, experiment, 2.0, 2.0, dest_folder)
 
 
-def make_raster(spike_data, experiment, prestim, poststim, dest):
+def make_raster(spikedata, experiment, prestim, poststim, dest):
 	# get number of units, number of stims
 	cells = btsf.get_cluids(spikedata)
 	stim_names = btsf.get_stim_names(spikedata)
